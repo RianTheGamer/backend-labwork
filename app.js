@@ -4,6 +4,7 @@
 // This is the main file for the application
 // Start mongodb using "brew services start mongodb-community@6.0"
 // Use "npm run start" to start the server
+// push to github using "git push -u -f origin main"
 
 // Importing the express module
 const express = require('express');
