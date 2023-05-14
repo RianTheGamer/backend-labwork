@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Index Page</title>
+
+	<style>
+		body {
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 80vh;
+            margin: 0;
+		}
+
+		h1 {
+			margin-top: 50px;
+			margin-bottom: 20px;
+			font-size: 36px;
+			text-align: center;
+		}
+
+		.button {
+			padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+			margin-left: 20px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+			text-decoration: none;
+		}
+
+		.button:hover {
+			background-color: #3e8e41;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>Welcome <%= name %>!</h1>
+	<br>
+	<img style="border-radius: 5px;" src= "data:image/jpeg;base64, <%= photo.toString('base64') %>" alt="photo" width="150px" height="150px">
+
+	<br>
+
+	<h2>Profile Information</h2>
+	Name: 
+	<%= name %>
+	<br>
+	Email: 
+	<%= email %>
+
+	<div style="margin-top: 50px;">
+		<a href="/list" class="button">List User</a>
+		<a href="/logout" class="button">Log Out</a>
+	</div>
+
+</body>
+
+</html>
