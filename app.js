@@ -52,6 +52,12 @@ const member = require('./models/member'); // MODEL
 // Importing the bcrypt module (pswd encryption)
 const bcrypt = require('bcrypt');
 
+// Using mongodb libraries to ONLY HANDLE UPDATE WTFF!
+const Db = require('mongodb');
+const url = "mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.8.0";
+const client = new Db.MongoClient(url);
+
+
 // ====================================== ROUTES STUFF ======================================
 
 // Importing the routes
@@ -98,6 +104,14 @@ const con = mongoose.connection;
 con.on('open', function () {
     console.log('Connected to the database...');
 });
+
+// mongoClient connection logs
+client.connect(err => {
+
+    if(err) throw err;
+    console.log('Connected to the database...');
+    client.close();
+})
 
 // ==============================================================================================
 
@@ -234,22 +248,11 @@ app.get('/edit/:id', async (req, res) => {
 
 app.post('/edit/:id', async (req, res) => {
 
-    // update the user with the specified id
-    try {
-        const update = {
-            name: req.body.name,
-            email: req.body.email
-        }
-        if (await member.findByIdAndUpdate({ _id: req.params.id }, update)) {
-            console.log("User updated successfully.");
-        }
-        else {
-            console.log("User not updated.");
-        }
-    }
-    catch (err) {
-        console.log(err);
-    }
+    const id = new Db.ObjectId(req.params.id);
+
+    const name = req.body.name;
+    console.log("name: " + name);
+    await member.db.collection('members').updateOne({ _id: id }, { $set: { name: name } });
 
     // redirect to the list page
     res.redirect('/list');
