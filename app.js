@@ -17,18 +17,24 @@ const app = express();
 
 // ====================================== SESSION HANDLING ======================================
 
+// trust first proxy
+app.set('trust proxy', 1)
+
 // Importing the express-session module (for session handling)
 const session = require('express-session');
 
 // Using the express-session module
 app.use(session({
-    secret: 'secret-key',
+    name: 'sid',
+    secret: 'leave-her-johnny-leave-her',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 24 * 60 * 60 * 1000 } // 1 day limit of logging in
+    cookie: {
+        maxAge: 10000,
+    }
 }));
 
-// destroying session
+// destroying session when logging out
 app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/');
@@ -64,7 +70,7 @@ const client = new Db.MongoClient(url);
 const membersRouter = require('./routes/members'); // ROUTES
 
 // Using the routes
-app.use('/members', membersRouter);
+//app.use('/members', membersRouter);
 
 // ====================================== document formatting goes here ======================================
 
@@ -108,7 +114,7 @@ con.on('open', function () {
 // mongoClient connection logs
 client.connect(err => {
 
-    if(err) throw err;
+    if (err) throw err;
     console.log('Connected to the database...');
     client.close();
 })
@@ -119,11 +125,13 @@ client.connect(err => {
 
 // main page route 
 app.get('/', (req, res) => {
+
     res.render('index.ejs');
 });
 
 // login page route
 app.get('/login', (req, res) => {
+
     res.render('login.ejs');
 });
 
@@ -188,7 +196,16 @@ app.post('/login', async (req, res) => {
             // if the password is correct, create session ID and redirect user to the profile page
             if (await bcrypt.compare(req.body.password, findEmail.password)) {
 
+                // create session ID
                 req.session.email = findEmail.email;
+
+                // save the session ID
+                req.session.save(function (err) {
+                    if (err) { 
+                        return next(err);
+                    }
+                });
+
                 res.redirect('/profile');
             }
 
@@ -214,6 +231,7 @@ app.post('/login', async (req, res) => {
         res.redirect('/login');
     }
 });
+
 
 // ====================================== LIST USER REQUESTS ======================================
 
